@@ -1,4 +1,4 @@
-# Project Title
+# Project: TryParse examples
 
 One Paragraph of project description goes here
 
@@ -8,80 +8,59 @@ These instructions will get you a copy of the project up and running on your loc
 
 ### Prerequisites
 
-What things you need to install the software and how to install them
-
-```
-Give examples
-```
+Visual Studio installed.
 
 ### Installing
 
-A step by step series of examples that tell you how to get a development env running
-
-Say what the step will be
-
-```
-Give the example
-```
-
-And repeat
-
-```
-until finished
-```
-
-End with an example of getting some data out of the system or using it for a little demo
-
-## Running the tests
-
-Explain how to run the automated tests for this system
-
-### Break down into end to end tests
-
-Explain what these tests test and why
-
-```
-Give an example
-```
-
-### And coding style tests
-
-Explain what these tests test and why
-
-```
-Give an example
-```
-
-## Deployment
-
-Add additional notes about how to deploy this on a live system
+Run the program with Ctr+F5
 
 ## Built With
 
-* [Dropwizard](http://www.dropwizard.io/1.0.2/docs/) - The web framework used
-* [Maven](https://maven.apache.org/) - Dependency Management
-* [ROME](https://rometools.github.io/rome/) - Used to generate RSS Feeds
+* Visual Studio 2017
 
-## Contributing
+## Information about parsing int (int.Parse, int.TryParse)
 
-Please read [CONTRIBUTING.md](https://gist.github.com/PurpleBooth/b24679402957c63ec426) for details on our code of conduct, and the process for submitting pull requests to us.
+A string, when parsed, can be represented as another type like int. 
+The word "int" in the C# language simply aliases the System.Int32 type.
+"System.Int32.Parse" or "System.Int32.TryParse" is equivalent to int.Parse and int.TryParse.
+In projects where speed is an issue (which is common), I take the time to add an optimized method like IntParseFast below.
 
-## Versioning
+Floating-point: If the input has many digits or decimal places, use double.Parse or double.TryParse.
 
-We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/your/project/tags). 
+Other types. Numbers can be smaller than an int (like a byte) or much larger (like a decimal). Each type has a useful Parse and TryParse method.
+        bool.Parse
+        decimal.Parse
+        double.Parse
+        long.Parse
 
-## Authors
+* int.Parse:
+- Parse() throws exceptions on invalid input. This can be slow if errors are common.
+Note: Parse() is a static method we access on the int type. It returns an integer upon success.
+- The int.Parse method is strict. With an invalid string, it throws a FormatException. We can catch this using a try-catch construct.
 
-* **Billie Thompson** - *Initial work* - [PurpleBooth](https://github.com/PurpleBooth)
+* int.TryParse:
+- Using the int.TryParse method is usually a better solution. TryParse is faster.
+- The parsing logic in TryParse is the same. But the way we call it is different.
+- TryParse uses somewhat more confusing syntax. It does not throw exceptions.
+- You must describe the second parameter with the out modifier. TryParse also returns true or false based on its success (eg: bool res = int.TryParse(text1, out num1);).
+- We must use out before the second argument in int.TryParse. With "out", the compiler can help you make sure your variables are always in a valid state.
 
-See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
+    * TryParse with no if:
+    - Usually we call int.TryParse inside an if-statement. But this is not required. And sometimes, we can just treat a failed parse as the default value (0 for int).
+    - This removes a branch in our code—we can just use the result, not test it. Branches are good for trees, but bad for performance.
 
-## License
+    * TryParse, new out syntax: 
+    - We can place the "out int" keywords directly inside a method call. Older versions of C# do not allow this syntax. But this can reduce the line count of a program.
 
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
+    * Convert:
+    - Convert.ToInt32 (along with its siblings Convert.ToInt16 and Convert.ToInt64) is a static wrapper method for the int.Parse method.
+    - Warning: ToInt32 can be slower than int.Parse if the surrounding code is equivalent.
+    - Confusing:The syntax here may be more confusing. It uses the bit size of the int, which may not be relevant to the code's intent.
+
+    * DateTime:
+    - We can parse a string into a DateTime type with TryParse. Parsing methods on DateTime use a similar syntax.
+
 
 ## Acknowledgments
 
-* Hat tip to anyone whose code was used
-* Inspiration
-* etc
+* See the source: https://www.dotnetperls.com/parse
